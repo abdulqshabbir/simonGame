@@ -68,12 +68,28 @@ html, body {
 }
 
 .yellowPad {
-  background-color: #FFC300;
+  background-color: #FFC300; /*yellow*/
   border-bottom-left-radius: 100%;
   border-right: 10px solid black;
   border-top: 10px solid black;
 }
 
-.active {
+.activeGreen {
+  transition: all ease 0.1s;
+  background-color: #b5f7b3; /* active green*/
+}
 
+.activeYellow {
+  transition: all ease 0.1s;
+  background-color: #efe0b2;  /*active yellow*/
+}
+
+.activeRed {
+  transition: all ease 0.1s;
+  background-color: #f39da2;  /*active red */
+}
+
+.activeBlue {
+  transition: all ease 0.1s;
+  background-color: #a0aee2; /*active blue*/
 }
