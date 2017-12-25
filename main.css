@@ -93,3 +93,21 @@ html, body {
   transition: all ease 0.1s;
   background-color: #a0aee2; /*active blue*/
 }
+
+#playButton {
+    margin-top: 20px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-left-width: 1px;
+    border-radius: 10px;
+    font-size: 30px;
+    padding-bottom: 10px;
+    background-color: #434242;
+    color:white;
+    cursor: pointer;
+}
+
+#playButton:hover {
+  background-color:#292727;
+}
