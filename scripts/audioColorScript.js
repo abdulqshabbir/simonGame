@@ -13,7 +13,7 @@ const sound4 = new Audio('sounds/simonSound4.mp3');
 
 const game = {
   isStarted: false,
-  whoseTurn: '',
+  whoseTurn: 'computer',
   compDifficulty: 1,
   computerTurnResult: [],
   playerTurnResult: [],
@@ -23,33 +23,45 @@ const game = {
     computerChoosesColors();
   },
   playerPlay: function() {
-
+    console.log('player is playing!');
   }
 };
 
 // -----------------------Game Logic ----------------------------------//
 
-let intervalID;
 
 function computerChoosesColors() {
-
-  function delayDisplayOfComputerChoices(moves) {
-    setTimeout(function() {
-      for (let i = 0; i < moves.length; i++) {
-        setTimeout(function() {
-          displayComputerChoice(moves[i]);
-        }, 1000);
-      }
-    }, 0);
-  }
   let moveHistory = [];
-  for (var i = 0; i < game.compDifficulty; i++) {
+  //create random array of computer moves and store
+  for (let i = 0; i < game.compDifficulty; i++) {
     let result = getRandomColor();
     moveHistory.push(result);
   }
-  delayDisplayOfComputerChoices(moveHistory);
+  //copy move history to game object
+  game.computerTurnResult = moveHistory;
 
+  //delay computer manipulation of DOM using setTimeout
+  //wrap setTimeout in IIFE to create a closure
+  for (let i = 0; i < moveHistory.length; i++) {
+    (function(i){
+      setTimeout(function () {
+        displayComputerChoice(moveHistory[i]);
+      }, 1200*i);
+    })(i);
+  }
+
+  //Wait until computer Turn is done making all its moves
+  // and then start the player's turn
+  setTimeout(function() {
+    console.log('Wait for it...')
+    game.playerPlay();
+  }, moveHistory.length*1000);
 }
+
+//-------------Testing out Promises -------------------------------
+
+
+// ---------------------------------------------------------------------
 
 
 function displayComputerChoice(choice) {
@@ -103,39 +115,47 @@ playButton.addEventListener('click', function() {
 
 
 greenPad.addEventListener('click', function(e) {
-  e.preventDefault();
-  sound1.currentTime = 0;
-  sound1.play();
-  greenPad.classList.remove('activeGreen');
-  greenPad.classList.add('activeGreen');
-  greenPad.addEventListener('transitionend', removeActiveGreenClass);
+  if(game.whoseTurn === 'player') {
+    e.preventDefault();
+    sound1.currentTime = 0;
+    sound1.play();
+    greenPad.classList.remove('activeGreen');
+    greenPad.classList.add('activeGreen');
+    greenPad.addEventListener('transitionend', removeActiveGreenClass);
+  }
 });
 
 bluePad.addEventListener('click', function(e) {
-  e.preventDefault();
-  sound2.currentTime = 0;
-  sound2.play();
-  greenPad.classList.remove('activeBlue');
-  bluePad.classList.add('activeBlue');
-  bluePad.addEventListener('transitionend', removeActiveBlueClass);
+  if(game.whoseTurn === 'player') {
+    e.preventDefault();
+    sound2.currentTime = 0;
+    sound2.play();
+    greenPad.classList.remove('activeBlue');
+    bluePad.classList.add('activeBlue');
+    bluePad.addEventListener('transitionend', removeActiveBlueClass);
+  }
 });
 
 redPad.addEventListener('click', function(e) {
-  e.preventDefault();
-  sound3.currentTime = 0;
-  sound3.play();
-  greenPad.classList.remove('activeRed');
-  redPad.classList.add('activeRed');
-  redPad.addEventListener('transitionend', removeActiveRedClass);
+  if(game.whoseTurn === 'player') {
+    e.preventDefault();
+    sound3.currentTime = 0;
+    sound3.play();
+    greenPad.classList.remove('activeRed');
+    redPad.classList.add('activeRed');
+    redPad.addEventListener('transitionend', removeActiveRedClass);
+  }
 });
 
 yellowPad.addEventListener('click', function(e) {
-  e.preventDefault();
-  sound4.currentTime = 0;
-  sound4.play();
-  greenPad.classList.remove('activeYellow');
-  yellowPad.classList.add('activeYellow');
-  yellowPad.addEventListener('transitionend', removeActiveYellowClass);
+  if(game.whoseTurn === 'player') {
+    e.preventDefault();
+    sound4.currentTime = 0;
+    sound4.play();
+    greenPad.classList.remove('activeYellow');
+    yellowPad.classList.add('activeYellow');
+    yellowPad.addEventListener('transitionend', removeActiveYellowClass);
+  }
 });
 
 function removeActiveGreenClass() {
