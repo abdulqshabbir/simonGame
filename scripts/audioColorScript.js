@@ -89,15 +89,15 @@ function handlePlayerClick(e) {
 }
 
 function checkForMatch(playerChoice, playerCounter) {
-  if(playerCounter < game.compDifficulty + 1) {
+  if(playerCounter < game.compDifficulty) {
     if(playerChoice !== game.computerTurnResult[playerCounter - 1]){
       game.gameOver();
       return;
     }
-    else{
+    else if (playerChoice === game.computerTurnResult[playerCounter - 1]) {
+      //player made the right selection so we exit out of this function and listen for more events
       console.log('you have a match!');
-      return; 
-      //player made the right selection so we listen for more events
+      return;
     }
   }
   game.whoseTurn = 'computer';
