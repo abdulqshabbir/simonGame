@@ -18,12 +18,15 @@ const game = {
   computerTurnResult: [],
   playerTurnResult: [],
   computerPlay: function() {
+    game.computerTurnResult = [];
     this.isStarted = true;
     this.whoseTurn = 'computer';
     computerChoosesColors();
   },
   playerPlay: function() {
-    console.log('player is playing!');
+    game.playerTurnResult = [];
+    this.whoseTurn = 'player';
+    playerChoosesColors();
   }
 };
 
@@ -53,7 +56,6 @@ function computerChoosesColors() {
   //Wait until computer Turn is done making all its moves
   // and then start the player's turn
   setTimeout(function() {
-    console.log('Wait for it...')
     game.playerPlay();
   }, moveHistory.length*1000);
 }
@@ -63,6 +65,60 @@ function computerChoosesColors() {
 
 // ---------------------------------------------------------------------
 
+function checkForMatch(array1, array2) {
+  if(array1.length !== array2.length) {
+    document.body.remove();
+    console.log('remove body!');
+    return false;
+  }
+  else {
+    for (var i = 0; i < array1.length; i++) {
+      if(array1[i] === array2[i]) {
+        i++;
+      }
+      else {
+        document.body.remove();
+        console.log('remove body!');
+        return false;
+      }
+    }
+  }
+  game.compDifficulty++;
+  game.computerPlay();
+  return true;
+}
+
+//Player chooses color:
+//While it is the player's turn (playerMoves <= computerMoves) listen for listenForClicks
+//Store clicks away in the game Object
+//After each click check to see if the click matched with computer's click
+//If it did, then keep listening for more clicks
+  //If the playerMoves end up reaching computerMoves
+//If it did not, break and delete DOM (for now)
+
+
+function playerChoosesColors() {
+  const pads = Array.from(document.querySelectorAll('.pad'));
+  let playerMoves = 0;
+  let computerMoves = game.compDifficulty;
+
+  pads.forEach(function(pad){//listen for clicks and store result in player object
+    pad.addEventListener('click', function listenForClicks(e) {
+      playerMoves++;
+      game.playerTurnResult.push(e.target.id);
+
+      if(playerMoves >= computerMoves) {//check for when player turn is over
+        checkForMatch(game.computerTurnResult, game.playerTurnResult);
+        pads.forEach(function(pad) {// Remove listening for clicks
+          pad.removeEventListener('click', listenForClicks, true);
+          console.log('remove listener');
+        });
+        return;
+      }
+
+    }, true);
+  });
+}
 
 function displayComputerChoice(choice) {
   switch(choice) {
@@ -108,11 +164,7 @@ playButton.addEventListener('click', function() {
   this.remove();
 });
 
-//------------ Code for manipulating the DOM --------------------------//
-
-
-
-
+//---- Code for manipulating the DOM when it's player's turn --------------//
 
 greenPad.addEventListener('click', function(e) {
   if(game.whoseTurn === 'player') {
