@@ -32,6 +32,7 @@ const game = {
   playerPlay: function() {
     game.playerTurnResult = [];
     this.whoseTurn = 'player';
+    this.playerTurnCount = 0;
   },
   gameOver: function() {
     clearTimeout(timerId1);
@@ -65,9 +66,6 @@ function computerChoosesColors() {
     })(i);
   }
 
-
-  //clearTimeout(timerId);
-
   //Wait until computer Turn is done making all its moves
   // and then start the player's turn
   timerId2 = setTimeout(function() {
@@ -86,10 +84,8 @@ function computerChoosesColors() {
 
 function handlePlayerClick(e) {
   let playerChoice = e.target.id;
-  game.playerTurnCount++;
-  console.log('player count', game.playerTurnCount);
+  game.playerTurnCount = game.playerTurnCount + 1;
   checkForMatch(playerChoice, game.playerTurnCount);
-  console.log('player has clicked the ' + e.target.id + ' button');
 }
 
 function checkForMatch(playerChoice, playerCounter) {
@@ -99,14 +95,16 @@ function checkForMatch(playerChoice, playerCounter) {
       return;
     }
     else{
-      //player made the right selection so we keep going
+      console.log('you have a match!');
+      return; 
+      //player made the right selection so we listen for more events
     }
   }
   game.whoseTurn = 'computer';
   timerId3 = setTimeout(function() {
     game.compDifficulty++;
     game.computerPlay();
-  }, 1000);
+  }, 3000);
 }
 
 function displayComputerChoice(choice) {
