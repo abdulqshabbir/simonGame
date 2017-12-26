@@ -1,3 +1,4 @@
+'use strict';
 // ----------------- Game Buttons and Sounds ------------------------------//
 const greenPad = document.getElementById('green');
 const bluePad = document.getElementById('blue');
@@ -9,6 +10,10 @@ const sound2 = new Audio('sounds/simonSound2.mp3');
 const sound3 = new Audio('sounds/simonSound3.mp3');
 const sound4 = new Audio('sounds/simonSound4.mp3');
 
+// ----------------------Global Variables ----------------------------//
+let timerId1;
+let timerId2;
+let timerId3;
 //---------------------- Game Object --------------------------------//
 
 const game = {
@@ -16,6 +21,7 @@ const game = {
   whoseTurn: 'computer',
   compDifficulty: 1,
   computerTurnResult: [],
+  playerTurnCount: 0,
   playerTurnResult: [],
   computerPlay: function() {
     game.computerTurnResult = [];
@@ -26,7 +32,13 @@ const game = {
   playerPlay: function() {
     game.playerTurnResult = [];
     this.whoseTurn = 'player';
-    playerChoosesColors();
+  },
+  gameOver: function() {
+    clearTimeout(timerId1);
+    clearTimeout(timerId2);
+    clearTimeout(timerId3);
+    console.log('cleared timer');
+    document.body.remove();
   }
 };
 
@@ -47,45 +59,20 @@ function computerChoosesColors() {
   //wrap setTimeout in IIFE to create a closure
   for (let i = 0; i < moveHistory.length; i++) {
     (function(i){
-      setTimeout(function () {
+      timerId1 = setTimeout(function () {
         displayComputerChoice(moveHistory[i]);
-      }, 1200*i);
+      }, 1000*i);
     })(i);
   }
 
+
+  //clearTimeout(timerId);
+
   //Wait until computer Turn is done making all its moves
   // and then start the player's turn
-  setTimeout(function() {
+  timerId2 = setTimeout(function() {
     game.playerPlay();
   }, moveHistory.length*1000);
-}
-
-//-------------Testing out Promises -------------------------------
-
-
-// ---------------------------------------------------------------------
-
-function checkForMatch(array1, array2) {
-  if(array1.length !== array2.length) {
-    document.body.remove();
-    console.log('remove body!');
-    return false;
-  }
-  else {
-    for (var i = 0; i < array1.length; i++) {
-      if(array1[i] === array2[i]) {
-        i++;
-      }
-      else {
-        document.body.remove();
-        console.log('remove body!');
-        return false;
-      }
-    }
-  }
-  game.compDifficulty++;
-  game.computerPlay();
-  return true;
 }
 
 //Player chooses color:
@@ -93,31 +80,33 @@ function checkForMatch(array1, array2) {
 //Store clicks away in the game Object
 //After each click check to see if the click matched with computer's click
 //If it did, then keep listening for more clicks
-  //If the playerMoves end up reaching computerMoves
+  //If the playerMoves end up reaching computerMoves make it computer's
+  //turn and increase computer Difficult by 1
 //If it did not, break and delete DOM (for now)
 
+function handlePlayerClick(e) {
+  let playerChoice = e.target.id;
+  game.playerTurnCount++;
+  console.log('player count', game.playerTurnCount);
+  checkForMatch(playerChoice, game.playerTurnCount);
+  console.log('player has clicked the ' + e.target.id + ' button');
+}
 
-function playerChoosesColors() {
-  const pads = Array.from(document.querySelectorAll('.pad'));
-  let playerMoves = 0;
-  let computerMoves = game.compDifficulty;
-
-  pads.forEach(function(pad){//listen for clicks and store result in player object
-    pad.addEventListener('click', function listenForClicks(e) {
-      playerMoves++;
-      game.playerTurnResult.push(e.target.id);
-
-      if(playerMoves >= computerMoves) {//check for when player turn is over
-        checkForMatch(game.computerTurnResult, game.playerTurnResult);
-        pads.forEach(function(pad) {// Remove listening for clicks
-          pad.removeEventListener('click', listenForClicks, true);
-          console.log('remove listener');
-        });
-        return;
-      }
-
-    }, true);
-  });
+function checkForMatch(playerChoice, playerCounter) {
+  if(playerCounter < game.compDifficulty + 1) {
+    if(playerChoice !== game.computerTurnResult[playerCounter - 1]){
+      game.gameOver();
+      return;
+    }
+    else{
+      //player made the right selection so we keep going
+    }
+  }
+  game.whoseTurn = 'computer';
+  timerId3 = setTimeout(function() {
+    game.compDifficulty++;
+    game.computerPlay();
+  }, 1000);
 }
 
 function displayComputerChoice(choice) {
@@ -125,7 +114,7 @@ function displayComputerChoice(choice) {
     case 'yellow':
         sound4.currentTime = 0;
         sound4.play();
-        greenPad.classList.remove('activeYellow');
+        yellowPad.classList.remove('activeYellow');
         yellowPad.classList.add('activeYellow');
         yellowPad.addEventListener('transitionend', removeActiveYellowClass);
       break;
@@ -139,14 +128,14 @@ function displayComputerChoice(choice) {
     case 'red':
         sound3.currentTime = 0;
         sound3.play();
-        greenPad.classList.remove('activeRed');
+        redPad.classList.remove('activeRed');
         redPad.classList.add('activeRed');
         redPad.addEventListener('transitionend', removeActiveRedClass);
       break;
     case 'blue':
         sound2.currentTime = 0;
         sound2.play();
-        greenPad.classList.remove('activeBlue');
+        bluePad.classList.remove('activeBlue');
         bluePad.classList.add('activeBlue');
         bluePad.addEventListener('transitionend', removeActiveBlueClass);
       break;
@@ -169,6 +158,7 @@ playButton.addEventListener('click', function() {
 greenPad.addEventListener('click', function(e) {
   if(game.whoseTurn === 'player') {
     e.preventDefault();
+    handlePlayerClick(e);
     sound1.currentTime = 0;
     sound1.play();
     greenPad.classList.remove('activeGreen');
@@ -180,9 +170,10 @@ greenPad.addEventListener('click', function(e) {
 bluePad.addEventListener('click', function(e) {
   if(game.whoseTurn === 'player') {
     e.preventDefault();
+    handlePlayerClick(e);
     sound2.currentTime = 0;
     sound2.play();
-    greenPad.classList.remove('activeBlue');
+    bluePad.classList.remove('activeBlue');
     bluePad.classList.add('activeBlue');
     bluePad.addEventListener('transitionend', removeActiveBlueClass);
   }
@@ -191,9 +182,10 @@ bluePad.addEventListener('click', function(e) {
 redPad.addEventListener('click', function(e) {
   if(game.whoseTurn === 'player') {
     e.preventDefault();
+    handlePlayerClick(e);
     sound3.currentTime = 0;
     sound3.play();
-    greenPad.classList.remove('activeRed');
+    redPad.classList.remove('activeRed');
     redPad.classList.add('activeRed');
     redPad.addEventListener('transitionend', removeActiveRedClass);
   }
@@ -202,9 +194,10 @@ redPad.addEventListener('click', function(e) {
 yellowPad.addEventListener('click', function(e) {
   if(game.whoseTurn === 'player') {
     e.preventDefault();
+    handlePlayerClick(e);
     sound4.currentTime = 0;
     sound4.play();
-    greenPad.classList.remove('activeYellow');
+    yellowPad.classList.remove('activeYellow');
     yellowPad.classList.add('activeYellow');
     yellowPad.addEventListener('transitionend', removeActiveYellowClass);
   }
