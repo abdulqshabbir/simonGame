@@ -14,7 +14,6 @@ const sound4 = new Audio('sounds/simonSound4.mp3');
 let timerId1;
 let timerId2;
 let timerId3;
-const computerTaunts = ["I'm trying to go easy on you", "What's the hold up", "Which part of 'click' didn't you understand?", "Do your parents know you're up this late", "Wake me up when you're done"];
 //---------------------- Game Object --------------------------------//
 
 const game = {
@@ -46,6 +45,7 @@ const game = {
   }
 };
 
+game.computerTaunts = ["I'm trying to go easy on you", "What's the hold up", "Which part of 'click' didn't you understand?", "Do your parents know you're up this late", "Wake me up when you're done"];
 // -----------------------Game Logic ----------------------------------//
 
 
@@ -152,6 +152,7 @@ function getRandomColor() {
 playButton.addEventListener('click', function() {
   game.compDifficulty = 1;
   displayComputerDifficulty();
+  displayComputerTaunt();
   game.computerPlay();
   this.remove();
 });
@@ -162,15 +163,12 @@ function displayComputerDifficulty () {
   compLevel.innerHTML = difficulty;
 }
 
-function makeComputerTaunt(computerTaunts) {
-  const numberOfTaunts = computerTaunts.length;
-  const randomNum = Math.floor(Math.random()*numberOfTaunts);
-
-  return computerTaunts[randomNum];
-}
-
 function displayComputerTaunt() {
-  
+  const computerTaunts = game.computerTaunts;
+  const randomNum = Math.floor(Math.random()*computerTaunts.length);
+  const taunt = computerTaunts[randomNum];
+  const div = document.querySelector('.taunt');
+  div.innerHTML = taunt;
 }
 //---- Code for manipulating the DOM when it's player's turn --------------//
 

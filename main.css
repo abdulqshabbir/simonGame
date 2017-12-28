@@ -50,6 +50,7 @@ html, body {
   display:flex;
   flex-wrap: wrap;
   border: 20px solid black;
+  transform: scale(0.8);
 }
 
 .pad {
@@ -106,9 +107,9 @@ html, body {
 }
 
 #playButton {
-    margin-top: 20px;
-    padding-top: 10px;
-    padding-left: 10px;
+    margin-top: 10px;
+    padding-top: 5px;
+    padding-left: 5px;
     padding-right: 10px;
     border: 1px solid black;
     border-radius: 10px;
@@ -121,4 +122,12 @@ html, body {
 
 #playButton:hover {
   background-color:#292727;
+}
+
+.taunt{
+  font-family: cursive;
+  color: white;
+  font-size: 30px;
+  font-style: italic;
+  font-weight: 100;
 }
