@@ -13,6 +13,24 @@ html, body {
   width: 100%;
 }
 
+.gameTitle{
+  font-family: 'Alfa Slab One', cursive;
+  color: white;
+  font-size: 70px;
+}
+
+#playerLevel {
+  font-family: 'VT323', monospace;
+  font-size: 70px;
+  color: #DC0D29;
+  background-color: #32050C;
+  width: 70px;
+  padding-bottom: 10px;
+  border: 6px solid black;
+  border-radius: 10px;
+  text-align: center;
+}
+
 .mainContainer{
   display: flex;
   flex-wrap: nowrap;
@@ -22,13 +40,6 @@ html, body {
   background-color: #141414;
   width: 100%;
   height: 100%;
-}
-
-.playerLevel {
-  font-size: 40px;
-  color: white;
-  padding-bottom: 10px;
-  display: absolute;
 }
 
 .gameWrap{
@@ -99,7 +110,7 @@ html, body {
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    border-left-width: 1px;
+    border: 1px solid black;
     border-radius: 10px;
     font-size: 30px;
     padding-bottom: 10px;
