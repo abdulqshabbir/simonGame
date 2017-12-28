@@ -14,16 +14,19 @@ const sound4 = new Audio('sounds/simonSound4.mp3');
 let timerId1;
 let timerId2;
 let timerId3;
+const computerTaunts = ["I'm trying to go easy on you", "What's the hold up", "Which part of 'click' didn't you understand?", "Do your parents know you're up this late", "Wake me up when you're done"];
 //---------------------- Game Object --------------------------------//
 
 const game = {
   isStarted: false,
   whoseTurn: 'computer',
-  compDifficulty: 1,
+  compDifficulty: 0,
   computerTurnResult: [],
   playerTurnCount: 0,
   playerTurnResult: [],
   computerPlay: function() {
+    displayComputerDifficulty();
+    displayComputerTaunt();
     game.computerTurnResult = [];
     this.isStarted = true;
     this.whoseTurn = 'computer';
@@ -147,10 +150,28 @@ function getRandomColor() {
 }
 
 playButton.addEventListener('click', function() {
+  game.compDifficulty = 1;
+  displayComputerDifficulty();
   game.computerPlay();
   this.remove();
 });
 
+function displayComputerDifficulty () {
+  let difficulty = game.compDifficulty;
+  const compLevel = document.getElementById('playerLevel');
+  compLevel.innerHTML = difficulty;
+}
+
+function makeComputerTaunt(computerTaunts) {
+  const numberOfTaunts = computerTaunts.length;
+  const randomNum = Math.floor(Math.random()*numberOfTaunts);
+
+  return computerTaunts[randomNum];
+}
+
+function displayComputerTaunt() {
+  
+}
 //---- Code for manipulating the DOM when it's player's turn --------------//
 
 greenPad.addEventListener('click', function(e) {
